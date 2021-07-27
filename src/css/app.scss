@@ -1,0 +1,71 @@
+// app global css in SCSS form
+///******** GLOBALES ********/// 
+body {
+    line-height: 1.2;
+}
+
+.w70 { width: 70px; }
+.w80 { width: 80px; }
+.w90 { width: 90px; }
+//******** FIN GLOBALES *******///
+
+///******** MENU OPCIONES *******/// 
+.menu-option-active {
+    background-color: $primary;
+    .q-icon {
+         color: #fff;
+    }
+    .titulo {
+        color: #fff;
+    }
+    .subtitulo {
+        color: $lime-5;
+    }
+}
+///******** FIN MENU OPCIONES ******/// 
+
+///******** CONTENIDOS PRINCIPALES DE MODULOS ******/// 
+.seccion-titulo {
+    border-bottom: 1px solid $grey-6;
+    padding: 8px 18px;
+    .titulo {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .link {
+        font-size: 12px;
+    }
+}
+.scroll-body-index {
+    height: calc(100vh - 104px);
+}
+.filtros-container {
+    border: 1px solid $grey-6;
+    background-color: $grey-4;
+    height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.main-table {
+    max-height: calc(100vh - 200px)!important;
+}
+
+.main-table thead tr:first-child th {
+    background-color: $bgMainTableHeader;
+    position: sticky;
+    z-index: 1;
+    top: 0;
+}
+
+.main-table tr:nth-child(even) {
+    background-color: $bgMainTableStriped;
+}
+
+///****** FIN CONTENIDOS PRINCIPALES DE MODULOS *****///
+///**** ESTILOS SOBRECARGADOS DE QUASAR ******/
+.q-field--dense .q-field__control, .q-field--dense .q-field__marginal {
+    height: 32px;
+    font-size: 13px;
+}
+//********** FIN ESTILOS QUASAR **********//
