@@ -2,16 +2,16 @@
     <q-page>
         <!-- HEADER -->
         <div class="row seccion-titulo">
-            <div class="col-7">
-                <div class="row titulo">Inventario</div>
+            <div class="col-4">
+                <div class="row titulo">Productos</div>
                 <div class="row">
                     <q-breadcrumbs gutter="xs">
                         <q-breadcrumbs-el class="link" label="Home" to="/" />
-                        <q-breadcrumbs-el class="link" label="Inventario" />
+                        <q-breadcrumbs-el class="link" label="Productos" />
                     </q-breadcrumbs>
                 </div>
             </div>            
-            <div class="col-5 text-right">
+            <div class="col-8 text-right">
                 <q-btn
                     color="primary"
                     dense
@@ -20,14 +20,15 @@
                     aria-label="menu"
                     label="Agregar"
                     class="q-px-sm q-mr-md"
+                    to="/productos/agregar"
                 />
                 <q-btn
                     color="primary"
                     dense
                     no-caps
-                    icon-right="save"
+                    icon-right="las la-file-csv"
                     aria-label="menu"
-                    label="Exportar csv"
+                    label="Exportar"
                     class="q-px-sm"
                     @click="exportarExcel()"
                 />       
@@ -73,8 +74,7 @@
             </div>
 
             <div class="q-mt-lg">
-                <q-table
-                    
+                <q-table                    
                     :rows="rows"
                     :columns="columns"
                     row-key="name"
@@ -90,12 +90,12 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import HerramientasService from '../../services/HerramientasService';
 const herramientas = new HerramientasService();
 
-import { ref } from 'vue';
 export default {
-    name:'Inventario',
+    name:'ProductosIndex',
     data() {
         return {
             rows: [
@@ -173,11 +173,29 @@ export default {
         }
     },
 
-    mounted() {
+    mounted() {        
         
+        this.$notify('1message', 'advertencia');
+        this.$notify('message2', 'error');
+        this.$notify('message3', 'exito');
+
+        this.$axios.get("http://api.test/prueba").then( resp => {
+            console.log(resp);
+        })
+        .catch(error => console.log(error));
+            
+        this.$loader(true, 'Obteniendo información...');
+
+        setTimeout(()=>{
+            this.quitar()
+        },2000);
     },
 
     methods: {
+        quitar() {
+            console.log('quitar');
+            this.$loader(false);
+        },
         abrirFiltros() {
             this.mostrarFiltros = !this.mostrarFiltros;
         },
