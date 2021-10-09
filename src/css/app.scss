@@ -7,11 +7,33 @@ body {
 .w70 { width: 70px; }
 .w80 { width: 80px; }
 .w90 { width: 90px; }
+
+// Z-INDEX
+.zi-100 { z-index: 100; }
+.zi-1000 { z-index: 1000; }
 //******** FIN GLOBALES *******///
+
+///***** BOTONES *********////
+.btn-general{
+    width: 100px;
+}
+//********** FIN BOTONES ****//////
 
 ///******** MENU OPCIONES *******/// 
 .menu-option-active {
-    background-color: $primary;
+    background-color: $accent;
+    .q-icon {
+         color: $lime-5;
+    }
+    .titulo {
+        color: $lime-5;
+    }
+    .subtitulo {
+        color: $lime-5;
+    }
+}
+
+.menu-option-no-active {    
     .q-icon {
          color: #fff;
     }
@@ -22,6 +44,37 @@ body {
         color: $lime-5;
     }
 }
+
+.drawer-bg {
+    background-color: $primary;
+}
+
+.submenu {
+    margin-left: 200px;
+    width: 250px;
+    height: 100vh;
+    top: 0;
+    position: absolute;
+    background-color: $accent;
+
+    .titulo {
+        color: #fff;
+    }
+}
+
+.submenu-option-active {
+    
+    .q-icon {
+         color: $lime-5;
+    }
+    .titulo {
+        color: $lime-5;
+    }
+    .subtitulo {
+        color: $lime-5;
+    }
+}
+
 ///******** FIN MENU OPCIONES ******/// 
 
 ///******** CONTENIDOS PRINCIPALES DE MODULOS ******/// 
@@ -62,10 +115,24 @@ body {
     background-color: $bgMainTableStriped;
 }
 
+.titulo-h1 {
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 20px;
+}
+
+.bb-h1 { 
+    border-bottom: 1px solid $colorH1;
+    box-shadow : 0px 2px $bgMainTableStriped;
+}
+
 ///****** FIN CONTENIDOS PRINCIPALES DE MODULOS *****///
 ///**** ESTILOS SOBRECARGADOS DE QUASAR ******/
 .q-field--dense .q-field__control, .q-field--dense .q-field__marginal {
     height: 32px;
     font-size: 13px;
+}
+.q-field__messages, .text-negative {
+    font-size: 11px;
 }
 //********** FIN ESTILOS QUASAR **********//
