@@ -22,13 +22,14 @@
           round
           icon="more_vert"
           aria-label="Menu"
-          
+          @click="cerrarSesion()"
         />
         <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
     <q-drawer
+      v-if="mostrarOpciones"
       v-model="leftDrawerOpen"
       show-if-above
       :key="random"
@@ -134,18 +135,41 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       random: 0,
+      mostrarOpciones: true,
     }
   },
+  mounted() {
+    this.checar();
+  },
   methods: {
+    checar() {
+      
+      let storage = JSON.parse(localStorage.getItem('usuario'));
+      console.log(storage);
+
+      if(storage == null) {
+        this.$loader(false);
+        return this.$router.push('/login');
+      }
+      
+      if(storage !== null) {
+        if (storage.tipo == 1) {this.mostrarOpciones = false; this.leftDrawerOpen = false;}
+        else this.mostrarOpciones = true;
+      }  
+    },
     irHome() {
       let data = {
         menu: "home",
         submenu: "",
       };
-      localStorage.clear();
       localStorage.setItem("menu", JSON.stringify(data));
       this.random = Math.random() * (200000 - 1) + 1;
       this.$router.push('/');
+    },
+    cerrarSesion() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("usuario");
+      this.$router.push('/login');
     }
   },
 })

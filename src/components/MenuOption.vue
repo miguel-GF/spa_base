@@ -25,7 +25,7 @@
     appear
     enter-active-class="animated fadeIn"
     leave-active-class="animated fadeOut"      
-    v-if="showSubmenu"
+    v-show="showSubmenu"
   >
     <submenu-option
       :opciones="opcionesSubmenu"
