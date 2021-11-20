@@ -82,6 +82,7 @@
                     class="main-table"
                     :filter="filter"
                     :pagination="initialPagination"
+                    ref="table"
                 />
             </div>
         </q-scroll-area>
@@ -91,8 +92,6 @@
 
 <script>
 import { ref } from 'vue';
-import HerramientasService from '../../services/HerramientasService';
-const herramientas = new HerramientasService();
 
 export default {
     name:'ProductosIndex',
@@ -179,7 +178,7 @@ export default {
         this.$notify('message2', 'error');
         this.$notify('message3', 'exito');
 
-        this.$axios.get("http://api.test/prueba").then( resp => {
+        this.$get("pruebas/prueba").then( resp => {
             console.log(resp);
         })
         .catch(error => console.log(error));
@@ -200,7 +199,8 @@ export default {
             this.mostrarFiltros = !this.mostrarFiltros;
         },
         async exportarExcel() {
-           herramientas.exportarCsv(this.columns, this.rows, 'inventario');
+           let nombreArchivo = `productos-${this.$moment().format('DD-MM-YYYY')}`;
+           this.$excel.exportarCsv(this.columns, this.$refs.table.filteredSortedRows, nombreArchivo);
         }
     }
 };

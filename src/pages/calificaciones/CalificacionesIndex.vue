@@ -3,25 +3,15 @@
         <!-- HEADER -->
         <div class="row seccion-titulo">
             <div class="col-4">
-                <div class="row titulo">Productos</div>
+                <div class="row titulo">Calificaciones</div>
                 <div class="row">
                     <q-breadcrumbs gutter="xs">
                         <q-breadcrumbs-el class="link" label="Home" to="/" />
-                        <q-breadcrumbs-el class="link" label="Productos" />
+                        <q-breadcrumbs-el class="link" label="Calificaciones" />
                     </q-breadcrumbs>
                 </div>
             </div>            
-            <div class="col-8 text-right">
-                <q-btn
-                    color="primary"
-                    dense
-                    no-caps
-                    icon-right="add"
-                    aria-label="menu"
-                    label="Agregar"
-                    class="q-px-sm q-mr-md"
-                    to="/productos/agregar"
-                />
+            <div class="col-8 text-right">                
                 <q-btn
                     color="primary"
                     dense
@@ -65,11 +55,17 @@
                         @click="abrirFiltros()"
                     /> 
                 </div>
-                <q-slide-transition>
+                <!-- <q-slide-transition> -->
+                <transition
+                    appear
+                    enter-active-class="animated fadeIn"
+                    leave-active-class="animated fadeOut"      
+                >
+                    
                     <div v-show="mostrarFiltros" class="col-12 filtros-container q-my-md">
                         hola
                     </div>
-                </q-slide-transition>
+                </transition>
       
             </div>
 
@@ -97,15 +93,12 @@ export default {
     name:'AlumnosIndex',
     data() {
         return {
-            rows: [
-                {matricula:"201027890", nombre:"Pedro Pérez Flores", descripcion:"Hello world..."},
-                {matricula:"201027889", nombre:"Angélica Contreras Cruz", descripcion:"Hello world..."},
-                {matricula:"201177891", nombre:"Alfonso Ortiz Sánchez", descripcion:""},
-            ],
+            rows: [],
             columns: [
-                {name: 'matricula', align: 'center', label: 'Matrícula', labelExcel:'Matricula', field: 'matricula', sortable: true, headerClasses:'w70', format: val => val ? val : '--' },
-                {name: 'nombre', align: 'left', label: 'Nombre', labelExcel:'Nombre', field: 'nombre', sortable: true, format: val => val ? val : '--' },
-                {name: 'descripcion', align: 'left', label: 'Descripción', labelExcel:'Descripcion', field: 'descripcion', sortable: false, format: val => val ? val : '--' },
+                {name: 'usuario', align: 'left', label: 'Nombre', labelExcel:'Nombre', field: 'nombre_usuario', sortable: true, format: val => val ? val : '--' },
+                {name: 'materia', align: 'left', label: 'Materia', labelExcel:'Materia', field: 'nombre_materia', sortable: true, format: val => val ? val : '--' },
+                {name: 'calificacion', align: 'center', label: 'Calificación', labelExcel:'Calificacion', field: 'calificacion', sortable: true, format: val => val ? val : '--' },
+                {name: 'fecha',        align: 'center', label: 'Fecha', labelExcel:'Fecha', field: 'fecha', sortable: true, format: val => val ? val : '--' },
             ],
             filter: ref(''),
             mostrarFiltros: false,
@@ -120,33 +113,49 @@ export default {
     },
 
     mounted() {        
-        
-        this.$notify('1message', 'advertencia');
-        this.$notify('message2', 'error');
-        this.$notify('message3', 'exito');
-
-        this.$get("pruebas/prueba").then( resp => {
-            console.log(resp);
-        })
-        .catch(error => console.log(error));
-            
-        this.$loader(true, 'Obteniendo información...');
-
-        setTimeout(()=>{
-            this.quitar()
-        },2000);
+        this.cargaInicial();
     },
 
     methods: {
-        quitar() {
-            console.log('quitar');
-            this.$loader(false);
-        },
         abrirFiltros() {
             this.mostrarFiltros = !this.mostrarFiltros;
         },
+        async cargaInicial() {
+            this.$loader(true, 'Obteniendo información...');
+            let session = localStorage.getItem("usuario");
+            if(session) {
+                await this.obtenerCalificaciones();
+            }
+            this.$loader(false);
+        },
+        async obtenerCalificaciones() {
+            
+            let params = {
+                usuarioId: JSON.parse(localStorage.getItem("usuario")).usuario_id,
+            };
+
+            await this.$get("calificaciones/listarCalificaciones", {params})
+            .then( resp => {
+                console.log('respuesta');
+                console.log(resp);
+                this.rows = resp.data;
+            })
+            .catch(e => {
+                this.$loader(false);
+                let mensaje;
+                if(e.status == 600) {
+                    mensaje = e.mensaje;
+                    this.$notify(mensaje, 'error');
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("usuario");
+                    return this.$router.push('/login');
+                }
+                else mensaje = e;
+                this.$notify(mensaje, 'error');
+            });
+        },
         async exportarExcel() {
-           let nombreArchivo = `alumnos-${this.$moment().format('DD-MM-YYYY')}`;
+           let nombreArchivo = `calificaciones-${this.$moment().format('DD-MM-YYYY')}`;
            this.$excel.exportarCsv(this.columns, this.$refs.table.filteredSortedRows, nombreArchivo);
         }
     }
