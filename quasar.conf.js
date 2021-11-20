@@ -25,6 +25,9 @@ module.exports = configure(function (ctx) {
       'axios',
       'notify',
       'loader',
+      'guard',
+      'import',
+      'http',
     ],
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -48,6 +51,9 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+      env: {
+        API_URL: 'http://api.test/',
+      },
 
       // transpile: false,
 
@@ -74,16 +80,34 @@ module.exports = configure(function (ctx) {
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
+    // devServer: {
+    //   https: false,
+    //   port: 8080,
+    //   open: true // opens browser window automatically
+    // },
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      proxy: [
+        {
+          context: ['/sanctum', '/login', '/password', '/logout', '/api'],
+          target: 'http://api.test/', // Laravel Homestead end-point
+          // avoid problems with session and XSRF cookies
+          // When using capacitor, use the IP of the dev server streaming the app
+          // For SPA and PWA use localhost, given that the app is streamed on that host
+          // xxx address is your machine current IP address
+          cookieDomainRewrite:
+            ctx.modeName === 'capacitor' ? 'xxx.xxx.xxx.xxx' : 'localhost'
+        }
+      ]
     },
 
     // https://v2.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       // Quasar plugins
       plugins: [
+        'LocalStorage',
         'Notify',
         'Loading',
       ]

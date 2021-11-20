@@ -3,30 +3,40 @@ import { boot } from 'quasar/wrappers'
 import { Notify } from 'quasar';
 
 const notify = (message, tipo) => {
-  let color;
+  let color, icon;
+  let textColor = 'white';
   switch (tipo) {
     case "exito":
       color = "positive";
+      icon  = "thumb_up";
       break;
+    
     case "advertencia":
-      color = "warning";
+      color = "amber-5";
+      icon  = "priority_high";
+      textColor = "black";
       break;
+    
     case "error":
       color = "negative";
+      icon  = "report_problem";
       break;
   
     default:
-      color = "primary";
+      color = "info";
+      icon  = "info";
       break;
   }
 
   Notify.create({
+    progress: true,
     message,
     color,
-    avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+    icon,
+    position: 'top',
+    textColor,
     actions: [
-      { label: 'Reply', color: 'yellow', handler: () => { /* ... */ } },
-      { label: 'Dismiss', color: 'white', handler: () => { /* ... */ } },
+      { label: 'x', color: textColor, handler: () => { /* ... */ } },
     ],
   });
 };

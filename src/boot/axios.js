@@ -1,24 +1,61 @@
-import { boot } from 'quasar/wrappers'
+import { process } from 'quasar/wrappers'
 import axios from 'axios'
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' })
+function getToken() {
+  return localStorage.getItem("token");
+}
 
-export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+function getUserId() {
+  return JSON.parse(localStorage.getItem("usuario")).usuario_id;
+}
 
-  app.config.globalProperties.$axios = axios
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
+const baseURL = process.env.API_URL;
+const headers = {
+    'X-Requested-With': 'XMLHttpRequest',
+};
 
-  app.config.globalProperties.$api = api
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
+const api = axios.create({ 
+  baseURL, 
+  headers,
+  timeout: 10000,
+  //responseType: 'json',
 })
+
+//Solicitar intercepción
+api.interceptors.request.use(
+  config => {
+      if(getToken()){
+        // config.headers['ContentType'] = 'application/json;chartset=utf-8';
+        config.headers['token'] = getToken();
+        config.params = {
+          autorId: getUserId(),
+          ...config.params,
+        }
+      }
+
+      return config;
+  },
+  error => {
+      Promise.reject(error);
+  }
+)
+
+ // Intercepción de respuesta
+ api.interceptors.response.use(
+  response => {
+      let res = response.data;
+      if (response.status == 200) { // Cuando la solicitud es exitosa
+        if(response.data.status == 600)
+          return Promise.reject(response.data);
+        
+        return Promise.resolve(response);
+      } else {
+        // Procesamiento de varios estados de solicitud
+      }
+  },
+  error => {
+      return Promise.reject(error);
+  }
+)
 
 export { api, axios }
