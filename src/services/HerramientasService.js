@@ -1,8 +1,8 @@
-import { exportFile, useQuasar } from 'quasar';
+import { exportFile, Notify } from 'quasar';
 import HerramientasRepo from '../repos/HerramientasRepo';
 
 export default class herramientas {
-    exportarCsv(columns, rows, nombreArchivo) {
+    static exportarCsv(columns, rows, nombreArchivo) {
       // naive encoding to csv format
       const content = [columns.map(col => HerramientasRepo.wrapCsvValue(col.labelExcel))].concat(
         rows.map(row => columns.map(col => HerramientasRepo.wrapCsvValue(
@@ -20,10 +20,25 @@ export default class herramientas {
       )
 
       if (status !== true) {
-        $q.notify({
-          message: 'Browser denied file download...',
+        Notify.create({
+          message: 'El navegador denegó la descarga del archivo',
+          icon: 'report_problem',
           color: 'negative',
-          icon: 'warning'
+          position: 'top',          
+          actions: [
+            { label: 'x', color: 'white', handler: () => { /* ... */ } },
+          ],
+        });
+      }
+      else {
+        Notify.create({
+          message: 'Archivo descargado correctamente',
+          icon: 'thumb_up',
+          color: 'positive',
+          position: 'top',          
+          actions: [
+            { label: 'x', color: 'white', handler: () => { /* ... */ } },
+          ],
         })
       }
   }
